@@ -45,6 +45,7 @@ def chatbot(statement):
   if city == "":
     return "You need to tell me a city to check."
   baseFunc = None
+  baseKey = ""
   maxSimilarity = 0
   for scenario, value in baseStmtList.items():
     basedoc = nlp(value["stmt"])
@@ -52,8 +53,9 @@ def chatbot(statement):
     if similarity > maxSimilarity:
       maxSimilarity = similarity
       baseFunc = value["func"]
+      baseKey = value["key"]
   # Go for Max similarity
-  respStr = getResponse(city, baseFunc)
+  respStr = getResponse(city, baseFunc, baseKey)
   if maxSimilarity < MIN_SIMILARITY:
     return "Sorry I couldn't understand. Please rephrase the statement."
   # Return response string
@@ -64,26 +66,37 @@ def chatbot(statement):
 
 def getBaseStmtList(statement):
   baseStmtList = {}
+  defaultStmtList = {}
   statement = statement.lower()
+  
+  defaultStmtList["weather"] = {
+    "func": getWeather,
+    "stmt": "Current weather in a city",
+    "key": ""
+  }
   if "weather" in statement:
-    baseStmtList["weather"] = {
-      "func": getWeather,
-      "stmt": "Current weather in a city"
-    }
+    baseStmtList["weather"] = defaultStmtList["weather"]
   
+  defaultStmtList["temp_max"] = {
+    "func": getMain,
+    "stmt": "Maximum temperature in a city",
+    "key": "temp_max"
+  }
   if "max" in statement and "temp" in statement:
-    baseStmtList["maxtemp"] = {
-      "func": getMaxTemp,
-      "stmt": "Maximum temperature in a city"
-    }
+    baseStmtList["temp_max"] = defaultStmtList["temp_max"]
   
+  defaultStmtList["temp_min"] = {
+    "func": getMain,
+    "stmt": "Minimum temperature in a city",
+    "key": "temp_min"
+  }
   if "min" in statement and "temp" in statement:
-    baseStmtList["mintemp"] = {
-      "func": getMinTemp,
-      "stmt": "Minimum temperature in a city"
-    }
+    baseStmtList["temp_min"] = defaultStmtList["temp_min"]
   
-  return baseStmtList
+  if baseStmtList != {}:
+    return baseStmtList
+  
+  return defaultStmtList
 
 def getCityFound(doc):
   city = ""
@@ -93,31 +106,30 @@ def getCityFound(doc):
       break
   return city
 
-def getResponse(city, reqd_func):
+def getResponse(city, reqd_func, key):
   api_url = "http://api.openweathermap.org/data/2.5/weather?q={}&appid={}".format(city, API_KEY)
   response = requests.get(api_url)
   response_dict = response.json()
   # Check response
   if response.status_code == 200:
-    reqd_value = reqd_func(city, response_dict)
+    reqd_value = reqd_func(city, response_dict, key)
     return reqd_value
   else:
     print('HTTP {} calling URL [{}]'.format(response.status_code, api_url))
     return None
 
-def getWeather(city, response_dict):
+def getWeather(city, response_dict, key=""):
   weather = response_dict["weather"][0]["description"]
   respStr = "In {}, the current weather is: {}".format(city, weather)
   return respStr
 
-def getMaxTemp(city, response_dict):
-  maxtemp = response_dict["main"]["temp_max"]
-  respStr = "In {}, the maximum temperature is: {}".format(city, maxtemp)
-  return respStr
-
-def getMinTemp(city, response_dict):
-  mintemp = response_dict["main"]["temp_min"]
-  respStr = "In {}, the minimum temperature is: {}".format(city, mintemp)
+def getMain(city, response_dict, key=""):
+  if key == "temp_max":
+    resStr = "maximum temperature"
+  elif key == "temp_min":
+    resStr = "minimum temperature"
+  detStr = response_dict["main"][key]
+  respStr = "In {}, the {} is: {}".format(city, resStr, detStr)
   return respStr
 
 if __name__ == "__main__":
