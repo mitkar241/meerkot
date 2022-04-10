@@ -1,0 +1,28 @@
+{
+  "name": "meerkot",
+  "version": "1.0.0",
+  "description": "meerkot, a monitoring app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mitkar241/meerkot.git"
+  },
+  "keywords": [
+    "slackbot",
+    "node",
+    "bolt",
+    "monitoring"
+  ],
+  "author": "mitkar241",
+  "license": "",
+  "bugs": {
+    "url": "https://github.com/mitkar241/meerkot/issues"
+  },
+  "homepage": "https://github.com/mitkar241/meerkot#readme",
+  "dependencies": {
+    "@slack/bolt": "^3.11.0"
+  }
+}
