@@ -2,6 +2,8 @@
 
 const homedir = `${__dirname}/..`
 const { app } = require(`${homedir}/app.js`);
+const { config } = require(`${homedir}/utils/config.js`);
+const { logger } = require(`${homedir}/utils/logger.js`);
 const { model } = require(`${homedir}/utils/model.js`);
 
 /*
@@ -51,7 +53,7 @@ app.event('message', async ({ event, say }) => {
 
 function postMessage(event) {
   console.log(event)
-  let userToken = "xoxb-XXXX"
+  let userToken = config.bot.access_token
   try {
     // Call the chat.postEphemeral method using the WebClient
     const result = app.client.chat.postMessage({

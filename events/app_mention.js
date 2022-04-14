@@ -2,8 +2,9 @@
 
 const homedir = `${__dirname}/..`
 const { app } = require(`${homedir}/app.js`);
+const { config } = require(`${homedir}/utils/config.js`);
+const { logger } = require(`${homedir}/utils/logger.js`);
 const { model } = require(`${homedir}/utils/model.js`);
-
 /*
 {
   client_msg_id: '37b80a63-0b1c-4a76-99b6-1079522d1e41',
@@ -20,17 +21,48 @@ const { model } = require(`${homedir}/utils/model.js`);
 
 // subscribe to 'app_mention' event in your App config
 // need app_mentions:read and chat:write scopes
-app.event('app_mention', async ({ event, say }) => {
-  console.log(event)
+app.event('app_mention', async ({ ack, body, client, event, say }) => {
+  logger.info({"message": "meerkot app mentioned", "user": event.user, "text": event.text});
+  if (event.text === `<@${config.bot.id}> support`) {
+    //console.log("body", body)
+    //console.log("event", event)
+    logger.info({"message": "meerkot app mentioned", "user": event.user, "text": event.text});
+    try {
+      // Call the views.open method using the WebClient passed to listeners
+      const result = await client.views.open({
+        trigger_id: "XXXXXXXXXX",
+        view: meerport_modal
+      });
+      //console.log(result);
+      postMessage(payload)
+    }
+    catch (error) {
+      console.error(error);
+    }
+  }
   try {
     await say(
-        model.TextButtonThread(
-            event.channel,
-            `Thanks for the mention <@${event.user}>! Here's a button`,
-            "Button", "click_me_123", "first_button",
-            event["ts"]
-            )
-        );
+      {
+        "channel": event.channel,
+        "thread_ts": event["ts"],
+        "text": "Hi I am meerkot",
+        "blocks": [
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": [
+                `Hi <@${event.user}>!`,
+                "I am `meerkot` :robot_face:",
+                "can you kindly fill a `meercall` ticket?",
+                "(this helps narrow down the scope)",
+                "<slack.com/intl/en-in/features/workflow-automation|link to search for meercall ticket>",
+              ].join('\n'),
+            }
+          }
+        ]
+      }
+    );
   }
   catch (error) {
     console.error(error);
@@ -40,7 +72,7 @@ app.event('app_mention', async ({ event, say }) => {
 /*
 [ERROR]   An incoming event was not acknowledged within 3 seconds. Ensure that the ack() argument is called in a listener.
 */
-app.action('first_button', async( { ack, body, say } ) => {
+app.action('app_mention', async( { ack, body, say } ) => {
   // fired when a clicked button's actionId matches
   // Acknowledge action request before anything else
   await ack();
@@ -51,7 +83,7 @@ app.action('first_button', async( { ack, body, say } ) => {
         model.TextButton(
             body.channel.id,
             `Thanks for clicking the button <@${body.user.id}>! Here's a button`,
-            "Button", "click_me_123", "first_button"
+            "Button", "app_mention_value", "first_button"
             )
         );
   }

@@ -1,0 +1,26 @@
+# Filename : meerkot.conf.yaml
+# Description : This config file holds configs related to the slackbot, random api and service account details
+# Note : that details will differ based on slackbot, environment and channel.
+#
+---
+bot:
+  name: "meerkot"
+  port: 3000
+  log_chan: "meerkot-log"
+  
+  # found by reading the chat
+  id: "U03AVSSJERH"
+  
+  # https://api.slack.com/apps/A03BKK7EZ8Q/general?
+  # "App Credentials" - "Signing Secret"
+  signing_secret: "XXXX"
+  
+  # https://api.slack.com/apps/A03BKK7EZ8Q/oauth?
+  # "OAuth Tokens for Your Workspace"
+  access_token: "xoxb-XXXX"
+  
+  # https://api.slack.com/apps/A03BKK7EZ8Q/incoming-webhooks?
+  webhook:
+
+channel:
+  "random": "C01UXKJPZ39"

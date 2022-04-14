@@ -43,6 +43,21 @@ class Model {
     return textButton
   }
 
+  TextAttachment(pretext, text) {
+    let textAttach = {
+      "response_type": "in_channel",
+      "text": pretext,
+      "attachments": 
+      [
+        {
+          "text": text,
+          "mrkdwn_in": ["text", "pretext"]
+        }
+      ]
+    };
+    return textAttach;
+  }
+
 }
 
 let model = new Model();

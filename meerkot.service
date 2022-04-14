@@ -1,0 +1,14 @@
+[Unit]
+Description=meerkot, a slackbot application maintained by DSC team
+Wants=nginx.service
+After=nginx.service
+
+[Service]
+Type=oneshot
+ExecStart=/opt/meerkot/meerkot.sh meerkot 3000 start
+ExecStop=/opt/meerkot/meerkot.sh meerkot 3000 stop
+ExecReload=/opt/meerkot/meerkot.sh meerkot 3000 restart
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

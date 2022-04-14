@@ -133,8 +133,8 @@ server{
     listen 80;
     server_name 0.0.0.0;
     
-    location /slack/ {
-        rewrite ^/slack/?(.*)$ /$1 break;
+    location /meerkot/ {
+        rewrite ^/meerkot/?(.*)$ /$1 break;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header Host $host;
         proxy_pass http://127.0.0.1:3000;
@@ -143,8 +143,8 @@ server{
         proxy_set_header Connection "upgrade";
     }
     
-    location = /slack {
-        proxy_pass http://localhost/slack/;
+    location = /meerkot {
+        proxy_pass http://localhost/meerkot/;
     }
 }
 ```
