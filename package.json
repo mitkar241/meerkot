@@ -24,6 +24,7 @@
   "homepage": "https://github.com/mitkar241/meerkot#readme",
   "dependencies": {
     "@slack/bolt": "^3.11.0",
+    "axios": "^0.26.1",
     "cron": "^1.8.2",
     "express": "^4.17.3",
     "fs": "^0.0.1-security",

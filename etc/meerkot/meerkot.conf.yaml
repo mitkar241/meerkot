@@ -24,3 +24,7 @@ bot:
 
 channel:
   "random": "C01UXKJPZ39"
+
+newsapi:
+  token: "XXXX"
+

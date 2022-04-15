@@ -1,0 +1,89 @@
+# Filename : meerkot.manifest.yaml
+# Description : This config file holds configs related to the slackbot - meerkot
+# Steps :
+# - that content needs to be pasted in section "App Manifest" while creating / editing App
+# - "Install app" -> "Reinstall to Workspace"
+#
+---
+display_information:
+  name: meerkot
+  description: meerkot is a monitoring / on-call app
+  background_color: "#000000"
+  long_description: "meerkot is a monitoring / on-call app\r
+
+    this app provides different forms.\r
+
+    these are open to internal and external team members.\r
+
+    - support note (internal)\r
+
+    - support call (external)\r
+
+    - feedback (internal and external)"
+features:
+  app_home:
+    home_tab_enabled: true
+    messages_tab_enabled: true
+    messages_tab_read_only_enabled: true
+  bot_user:
+    display_name: meerkot
+    always_online: true
+  shortcuts:
+    - name: meernote
+      type: global
+      callback_id: meernote
+      description: meerkot incident note for internal
+    - name: meercall
+      type: global
+      callback_id: meercall
+      description: meerkot incident on-call for external
+    - name: meerback
+      type: global
+      callback_id: meerback
+      description: meerkot feedback for internal and external
+  slash_commands:
+    - command: /meernote
+      url: https://2c6f-115-187-43-77.ngrok.io/meerkot
+      description: meerkot incident note for internal
+      usage_hint: /meernote
+      should_escape: false
+    - command: /meercall
+      url: https://2c6f-115-187-43-77.ngrok.io/meerkot
+      description: meerkot incident on-call for external
+      usage_hint: /meernote
+      should_escape: false
+    - command: /meerback
+      url: https://2c6f-115-187-43-77.ngrok.io/meerkot
+      description: meerkot feedback for internal and external
+      usage_hint: /meerback
+      should_escape: false
+oauth_config:
+  scopes:
+    bot:
+      - incoming-webhook
+      - app_mentions:read
+      - chat:write
+      - commands
+      - reactions:write
+      - files:write
+      - channels:history
+      - channels:read
+      - groups:history
+      - groups:read
+      - im:history
+      - im:read
+settings:
+  event_subscriptions:
+    request_url: https://2c6f-115-187-43-77.ngrok.io/meerkot
+    bot_events:
+      - app_mention
+      - app_home_opened
+      - message.channels
+      - message.groups
+      - message.im
+  interactivity:
+    is_enabled: true
+    request_url: https://2c6f-115-187-43-77.ngrok.io/meerkot
+  org_deploy_enabled: false
+  socket_mode_enabled: false
+  token_rotation_enabled: false
