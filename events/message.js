@@ -5,6 +5,11 @@ const { app } = require(`${homedir}/app.js`);
 const { config } = require(`${homedir}/utils/config.js`);
 const { logger } = require(`${homedir}/utils/logger.js`);
 const { model } = require(`${homedir}/utils/model.js`);
+const { slack } = require(`${homedir}/utils/slack.js`);
+
+/*
+"app_mention" in IM triggers event "message"
+*/
 
 /*
 ##########
@@ -31,37 +36,51 @@ public group: 'channel'
 private group: 'group'
 */
 
-app.event('message', async ({ event, say }) => {
-  //if (event.text.includes('<@U03AVSSJERH>') == true) {
-  if (event.channel_type !== 'im') {
-    return
-  }
+app.event('message', async ({ ack, body, client, event, say }) => {
   try {
-    await say(
-        model.TextButton(
-            event.channel,
-            `Thanks for messaging <@${event.user}>! Here's a button`,
-            "Button", "click_me_123", "first_button"
-            )
-        );
-    postMessage(event);
+    //if (event.text.includes('<@U03AVSSJERH>') == true) {
+    if (event.channel_type !== 'im') {
+      return
+    }
+    if (event.text === `<@${config.bot.id}>`) {
+      printWelcomeMsg(ack, body, client, event, say)
+    }
   }
   catch (error) {
     console.error(error);
   }
 });
 
-function postMessage(event) {
-  console.log(event)
-  let userToken = config.bot.access_token
+function printWelcomeMsg(ack, body, client, event, say) {
+  logger.info({"message": "meerkot app mentioned", "user": event.user, "text": event.text});
+  console.log("event", event)
+  
+  let buttonElements = []
+  let attachText = ""
+  if (config.internal.members.includes(event.user) === true) {
+    buttonElements = [model.modal.meernote.button, model.modal.meerback.button]
+    attachText = [
+      " • raise a ticket to note on-call incident",
+      " • provide feedback",
+    ].join('\n')
+  } else {
+    buttonElements = [model.modal.meercall.button, model.modal.meerback.button]
+    attachText = [
+      " • raise a ticket to explain the type of support required",
+      " • provide feedback",
+    ].join('\n')
+  }
+
   try {
-    // Call the chat.postEphemeral method using the WebClient
-    const result = app.client.chat.postMessage({
-      channel: event.channel,
-      //user: event.user,
-      token: userToken,
-      text: `Thanks for joining the channel <@${event.user}>! @meerkot is here to help you.`
-    });
+    slack.postMessage({
+      "channel": event.user,
+      "text" : `Hi <@${event.user}>!`,
+      "attachments" : [
+        {
+          "blocks": model.getModalBlocks(attachText, buttonElements),
+        }
+      ],
+  });
   }
   catch (error) {
     console.error(error);

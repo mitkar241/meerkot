@@ -21,7 +21,7 @@ app.shortcut('meerback', async ({ ack, payload, client }) => {
       view: meerback_modal
     });
     //console.log(result);
-    postMessage(payload)
+    //postMessage(payload)
   }
   catch (error) {
     console.error(error);

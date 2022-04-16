@@ -21,7 +21,7 @@ app.shortcut('meernote', async ({ ack, payload, client }) => {
       view: meernote_modal
     });
     //console.log(result);
-    postMessage(payload)
+    //postMessage(payload)
   }
   catch (error) {
     console.error(error);

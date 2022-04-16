@@ -21,7 +21,7 @@ app.shortcut('meercall', async ({ ack, payload, client }) => {
       view: meercall_modal
     });
     //console.log(result);
-    postMessage(payload)
+    //postMessage(payload)
   }
   catch (error) {
     console.error(error);

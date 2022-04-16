@@ -126,6 +126,32 @@ class Slack {
         }
     }
 
+    addRxn(chanId, tstamp, emoji) {
+        try {
+          const result = app.client.reactions.add({
+            name: emoji,
+            channel: chanId,
+            timestamp: tstamp
+          });
+        }
+        catch (error) {
+          console.error(error);
+        }
+      }
+      
+      removeRxn(chanId, tstamp, emoji) {
+        try {
+          const result = app.client.reactions.remove({
+            name: emoji,
+            channel: chanId,
+            timestamp: tstamp
+          });
+        }
+        catch (error) {
+          console.error(error);
+        }
+      }
+
 }
 
 let slack = new Slack();

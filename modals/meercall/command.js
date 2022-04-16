@@ -40,7 +40,7 @@ app.command("/meercall", async ({ack, client, command}) => {
       view: meercall_modal
     });
     //console.log(result);
-    postMessageIm(command.user_id)
+    //postMessageIm(command.user_id)
   }
   catch (error) {
     console.error(error);

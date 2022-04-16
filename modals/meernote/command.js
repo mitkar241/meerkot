@@ -40,7 +40,7 @@ app.command("/meernote", async ({ack, client, command}) => {
       view: meernote_modal
     });
     //console.log(result);
-    postMessageIm(command.user_id)
+    //postMessageIm(command.user_id)
   }
   catch (error) {
     console.error(error);

@@ -9,6 +9,11 @@ const { config } = require(`${homedir}/utils/config.js`);
 const { logger } = require(`${homedir}/utils/logger.js`);
 const { model } = require(`${homedir}/utils/model.js`);
 const { slack } = require(`${homedir}/utils/slack.js`);
+
+/*
+"app_mention" in IM triggers event "message"
+*/
+
 /*
 {
   client_msg_id: '37b80a63-0b1c-4a76-99b6-1079522d1e41',
@@ -34,6 +39,7 @@ app.event('app_mention', async ({ ack, body, client, event, say }) => {
 });
 
 // Response Handler
+// add info
 function handleAppMention(ack, body, client, event, say) {
   if (event.text === `<@${config.bot.id}>`) {
     printWelcomeMsg(ack, body, client, event, say)
@@ -44,27 +50,26 @@ function handleAppMention(ack, body, client, event, say) {
   } else if(event.text === `<@${config.bot.id}> help`) {
     printHelp(ack, body, client, event, say)
   } else if(event.text === `<@${config.bot.id}> close`) {
-    removeRxn(event.channel, event["thread_ts"], "eyes")
-    addRxn(event.channel, event["thread_ts"], "white_check_mark")
+    slack.removeRxn(event.channel, event["thread_ts"], "eyes")
+    slack.addRxn(event.channel, event["thread_ts"], "white_check_mark")
   }
 }
 
-// inspire Me
 function printWelcomeMsg(ack, body, client, event, say) {
   logger.info({"message": "meerkot app mentioned", "user": event.user, "text": event.text});
   console.log("event", event)
-  addRxn(event.channel, event["event_ts"], "eyes")
+  slack.addRxn(event.channel, event["event_ts"], "eyes")
   
   let buttonElements = []
   let attachText = ""
   if (config.internal.members.includes(event.user) === true) {
-    buttonElements = [modalButtonObj.meernote.button, modalButtonObj.meerback.button]
+    buttonElements = [model.modal.meernote.button, model.modal.meerback.button]
     attachText = [
       " • raise a ticket to note on-call incident",
       " • provide feedback",
     ].join('\n')
   } else {
-    buttonElements = [modalButtonObj.meercall.button, modalButtonObj.meerback.button]
+    buttonElements = [model.modal.meercall.button, model.modal.meerback.button]
     attachText = [
       " • raise a ticket to explain the type of support required",
       " • provide feedback",
@@ -78,44 +83,7 @@ function printWelcomeMsg(ack, body, client, event, say) {
       "text" : `Hi <@${event.user}>!`,
       "attachments" : [
         {
-          "blocks": [
-            {
-              "type": "header",
-              "text": {
-                "type": "plain_text",
-                "text": "meerkot support",
-                "emoji": true
-              }
-            },
-            {
-              "type": "section",
-              "text": {
-                "type": "mrkdwn",
-                "text": attachText,
-              }
-            },
-            {
-              "type": "actions",
-              "elements": buttonElements,
-            },
-            {
-              "type": "divider"
-            },
-            {
-              "type": "context",
-              "elements": [
-                {
-                  "type": "image",
-                  "image_url": config.bot.logo,
-                  "alt_text": "meerkot-logo"
-                },
-                {
-                  "type": "mrkdwn",
-                  "text": "*meerkot*, a slackbot maintained by the *DevOps* team."
-                }
-              ]
-            }
-          ]
+          "blocks": model.getModalBlocks(attachText, buttonElements),
         }
       ],
   });
@@ -214,74 +182,4 @@ function printHelp(ack, body, client, event, say) {
   catch (error) {
     console.error(error);
   }
-}
-
-function addRxn(chanId, tstamp, emoji) {
-  let userToken = config.bot.access_token
-  try {
-    const result = app.client.reactions.add({
-      name: emoji,
-      channel: chanId,
-      timestamp: tstamp
-    });
-  }
-  catch (error) {
-    console.error(error);
-  }
-}
-
-// Show Help
-function removeRxn(chanId, tstamp, emoji) {
-  let userToken = config.bot.access_token
-  try {
-    const result = app.client.reactions.remove({
-      name: emoji,
-      channel: chanId,
-      timestamp: tstamp
-    });
-  }
-  catch (error) {
-    console.error(error);
-  }
-}
-
-let modalButtonObj = {
-  "meernote": {
-    "button": {
-      "type": "button",
-      "text": {
-        "type": "plain_text",
-        "text": "note incident",
-        "emoji": true
-      },
-      "style": "primary",
-      "value": "meernote",
-      "action_id": "meernote"
-    },
-  },
-  "meercall": {
-    "button": {
-      "type": "button",
-      "text": {
-        "type": "plain_text",
-        "text": "on-call support",
-        "emoji": true
-      },
-      "style": "danger",
-      "value": "meercall",
-      "action_id": "meercall"
-    },
-  },
-  "meerback": {
-    "button": {
-      "type": "button",
-      "text": {
-        "type": "plain_text",
-        "text": "feedback",
-        "emoji": true
-      },
-      "value": "meerback",
-      "action_id": "meerback"
-    },
-  },
 }
