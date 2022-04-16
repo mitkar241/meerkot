@@ -8,6 +8,7 @@ const { app } = require(`${homedir}/app.js`);
 const { config } = require(`${homedir}/utils/config.js`);
 const { logger } = require(`${homedir}/utils/logger.js`);
 const { model } = require(`${homedir}/utils/model.js`);
+const { slack } = require(`${homedir}/utils/slack.js`);
 /*
 {
   client_msg_id: '37b80a63-0b1c-4a76-99b6-1079522d1e41',
@@ -25,7 +26,7 @@ const { model } = require(`${homedir}/utils/model.js`);
 // subscribe to 'app_mention' event in your App config
 // need app_mentions:read and chat:write scopes
 app.event('app_mention', async ({ ack, body, client, event, say }) => {
-  logger.info({"message": "meerkot app mentioned", "user": event.user, "text": event.text});
+  logger.info({"message": "meerkot app mentioned", "user": event.user, "channel": event.channel, "text": event.text});
   /*if(data.type !== 'message') {
       return;
   }*/
@@ -48,51 +49,76 @@ function handleAppMention(ack, body, client, event, say) {
   }
 }
 
-function postMessageChan(channelId) {
-  let userToken = config.bot.access_token
-  try {
-    // Call the chat.postEphemeral method using the WebClient
-    const result = app.client.chat.postMessage({
-      channel: userid,
-      //user: event.user,
-      token: userToken,
-      text: `Thanks for using meernote <@${userid}>! @meerkot is here to help you.`
-    });
-  }
-  catch (error) {
-    console.error(error);
-  }
-}
-
 // inspire Me
 function printWelcomeMsg(ack, body, client, event, say) {
   logger.info({"message": "meerkot app mentioned", "user": event.user, "text": event.text});
   console.log("event", event)
   addRxn(event.channel, event["event_ts"], "eyes")
   
+  let buttonElements = []
+  let attachText = ""
+  if (config.internal.members.includes(event.user) === true) {
+    buttonElements = [modalButtonObj.meernote.button, modalButtonObj.meerback.button]
+    attachText = [
+      " • raise a ticket to note on-call incident",
+      " • provide feedback",
+    ].join('\n')
+  } else {
+    buttonElements = [modalButtonObj.meercall.button, modalButtonObj.meerback.button]
+    attachText = [
+      " • raise a ticket to explain the type of support required",
+      " • provide feedback",
+    ].join('\n')
+  }
+
   try {
-    say(
-      {
-        "channel": event.channel,
-        "thread_ts": event["ts"],
-        "text": "Hi I am meerkot",
-        "blocks": [
-          {
-            "type": "section",
-            "text": {
-              "type": "mrkdwn",
-              "text": [
-                `Hi <@${event.user}>!`,
-                "I am `meerkot` :robot_face:",
-                "can you kindly fill a `meercall` ticket?",
-                "(this helps narrow down the scope)",
-                "<slack.com/intl/en-in/features/workflow-automation|link to search for meercall ticket>",
-              ].join('\n'),
+    slack.postMessage({
+      "channel": event.channel,
+      "thread_ts" : event["ts"],
+      "text" : `Hi <@${event.user}>!`,
+      "attachments" : [
+        {
+          "blocks": [
+            {
+              "type": "header",
+              "text": {
+                "type": "plain_text",
+                "text": "meerkot support",
+                "emoji": true
+              }
+            },
+            {
+              "type": "section",
+              "text": {
+                "type": "mrkdwn",
+                "text": attachText,
+              }
+            },
+            {
+              "type": "actions",
+              "elements": buttonElements,
+            },
+            {
+              "type": "divider"
+            },
+            {
+              "type": "context",
+              "elements": [
+                {
+                  "type": "image",
+                  "image_url": config.bot.logo,
+                  "alt_text": "meerkot-logo"
+                },
+                {
+                  "type": "mrkdwn",
+                  "text": "*meerkot*, a slackbot maintained by the *DevOps* team."
+                }
+              ]
             }
-          }
-        ]
-      }
-    );
+          ]
+        }
+      ],
+  });
   }
   catch (error) {
     console.error(error);
@@ -120,7 +146,7 @@ function printPopularSportsNews(ack, body, client, event, say) {
       
       try {
         console.log(event)
-        uploadFile({
+        slack.fileupload({
           channels: event.channel,
           thread_ts: event["event_ts"],
           initial_comment: `Hi <@${event.user}>! Here is the sports news file`,
@@ -219,40 +245,43 @@ function removeRxn(chanId, tstamp, emoji) {
   }
 }
 
-/*
-https://api.slack.com/methods/files.upload
-https://api.slack.com/types/file#file_types
-*/
-function uploadFile(fileObj) {
-  try {
-    // Call the files.upload method using the WebClient
-    const result = app.client.files.upload({
-      
-      // If you want to put more than one channel, separate using comma, example: 'general,random'
-      channels: fileObj.channels,
-
-      // Upload file in a thread
-      thread_ts: fileObj.thread_ts,
-
-      // comment in the same message
-      initial_comment: fileObj.initial_comment,
-      
-      // title of the file while downloading
-      title: fileObj.title,
-
-      // filename once downloaded
-      filename: fileObj.filename,
-
-      // provide file type
-      fileType: fileObj.fileType,
-
-      // via multipart/form-data. If omitting this parameter, you MUST submit content
-      file: fs.createReadStream(fileObj.filePath)
-
-    });
-    //console.log(result);
-  }
-  catch (error) {
-    console.error(error);
-  }
+let modalButtonObj = {
+  "meernote": {
+    "button": {
+      "type": "button",
+      "text": {
+        "type": "plain_text",
+        "text": "note incident",
+        "emoji": true
+      },
+      "style": "primary",
+      "value": "meernote",
+      "action_id": "meernote"
+    },
+  },
+  "meercall": {
+    "button": {
+      "type": "button",
+      "text": {
+        "type": "plain_text",
+        "text": "on-call support",
+        "emoji": true
+      },
+      "style": "danger",
+      "value": "meercall",
+      "action_id": "meercall"
+    },
+  },
+  "meerback": {
+    "button": {
+      "type": "button",
+      "text": {
+        "type": "plain_text",
+        "text": "feedback",
+        "emoji": true
+      },
+      "value": "meerback",
+      "action_id": "meerback"
+    },
+  },
 }

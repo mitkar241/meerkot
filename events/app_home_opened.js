@@ -9,7 +9,7 @@ var fs = require('fs');
 
 app.event('app_home_opened', async ({ event, say }) => {
   // Display App Home
-  const homeView = await updateView(event.user);
+  const homeView = await updateView();
   try {
     const result = await app.client.views.publish({
       token: config.bot.access_token,
@@ -57,38 +57,100 @@ function postMessage(event) {
   }
 }
 
-const updateView = async(user) => {
-  let blocks = [ 
-  {
-    // Section with text and a button
-    type: "section",
-    text: {
-      type: "mrkdwn",
-      text: "*Welcome!*\nHi I am meerkot!\nLet me know how I can assist you."
-    },
-    accessory: {
-      type: "button",
-      action_id: "add_note", 
-      text: {
-        type: "plain_text",
-        text: "Add a Stickie"
+const updateView = async() => {
+  buttonElements = [modalButtonObj.meernote.button, modalButtonObj.meercall.button, modalButtonObj.meerback.button]
+    attachText = [
+      " • raise a ticket to explain the type of support required",
+      " • provide feedback",
+    ].join('\n')
+  let blocks = [
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": "meerkot support",
+        "emoji": true
       }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": attachText,
+      }
+    },
+    {
+      "type": "actions",
+      "elements": buttonElements,
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "context",
+      "elements": [
+        {
+          "type": "image",
+          "image_url": config.bot.logo,
+          "alt_text": "meerkot-logo"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*meerkot*, a slackbot maintained by the *DevOps* team."
+        }
+      ]
     }
-  },
-  // Horizontal divider line 
-  {
-    type: "divider"
-  }
-];
+  ];
 
 let view = {
   type: 'home',
   title: {
     type: 'plain_text',
-    text: 'Keep notes!'
+    text: 'meerkot home'
   },
   blocks: blocks
 }
 
 return JSON.stringify(view);
 };
+
+let modalButtonObj = {
+  "meernote": {
+    "button": {
+      "type": "button",
+      "text": {
+        "type": "plain_text",
+        "text": "note incident",
+        "emoji": true
+      },
+      "style": "primary",
+      "value": "meernote",
+      "action_id": "meernote"
+    },
+  },
+  "meercall": {
+    "button": {
+      "type": "button",
+      "text": {
+        "type": "plain_text",
+        "text": "on-call support",
+        "emoji": true
+      },
+      "style": "danger",
+      "value": "meercall",
+      "action_id": "meercall"
+    },
+  },
+  "meerback": {
+    "button": {
+      "type": "button",
+      "text": {
+        "type": "plain_text",
+        "text": "feedback",
+        "emoji": true
+      },
+      "value": "meerback",
+      "action_id": "meerback"
+    },
+  },
+}

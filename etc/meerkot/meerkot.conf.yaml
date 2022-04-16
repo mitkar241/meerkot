@@ -7,6 +7,8 @@ bot:
   name: "meerkot"
   port: 3000
   log_chan: "meerkot-log"
+
+  logo: "https://avatars.slack-edge.com/2022-04-09/3355299924775_b47d099bb8176b5a6073_96.png"
   
   # found by reading the chat
   id: "U03AVSSJERH"
@@ -24,7 +26,12 @@ bot:
 
 channel:
   "random": "C01UXKJPZ39"
+  "internal": "C03B7UYCAUX"
+  "external": "C03BFTNEGLE"
+
+internal:
+  members:
+    - "U020B1J5LSV"
 
 newsapi:
   token: "XXXX"
-

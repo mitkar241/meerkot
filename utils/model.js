@@ -58,20 +58,6 @@ class Model {
     return textAttach;
   }
 
-  postMessageIm(channelId, userId) {
-    let userToken = config.bot.access_token
-    try {
-      const result = app.client.chat.postMessage({
-        channel: channelId,
-        token: userToken,
-        text: `Thanks for using meernote <@${userId}>! @meerkot is here to help you.`
-      });
-    }
-    catch (error) {
-      console.error(error);
-    }
-  }
-
 }
 
 let model = new Model();
