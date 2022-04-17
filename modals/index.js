@@ -1,5 +1,5 @@
 #!/usr/bin/env node
 
-require(`${__dirname}/meernote`);
-require(`${__dirname}/meercall`);
-require(`${__dirname}/meerback`);
+require(`${__dirname}/meernote.js`);
+require(`${__dirname}/meercall.js`);
+require(`${__dirname}/meerback.js`);

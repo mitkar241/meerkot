@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
-const exec = require('child_process').exec;
+const homedir = `${__dirname}/..`
+const { logger } = require(`${homedir}/utils/logger.js`);
+const { exec } = require('child_process');
 
 function shellCmdFunc() {
     this.execCommand = function(cmd, callback) {

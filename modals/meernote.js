@@ -1,11 +1,36 @@
 #!/usr/bin/env node
 
-const homedir = `${__dirname}/../..`
+const homedir = `${__dirname}/..`
 const { app } = require(`${homedir}/app.js`);
 const { config } = require(`${homedir}/utils/config.js`);
 const { logger } = require(`${homedir}/utils/logger.js`);
-const { model } = require(`${homedir}/utils/model.js`);
+const { modal } = require(`${homedir}/utils/modal.js`);
 
+/*
+##########
+# ACKNOWLEDGE ACTIONS
+##########
+*/
+app.action('meernote_summary', async( { ack} ) => {ack();});
+app.action('meernote_time', async( { ack} ) => {ack();});
+app.action('meernote_from', async( { ack} ) => {ack();});
+app.action('meernote_till', async( { ack} ) => {ack();});
+app.action('meernote_tags', async( { ack} ) => {ack();});
+app.action('meernote_description', async( { ack} ) => {ack();});
+app.action('meernote_teams', async( { ack} ) => {ack();});
+app.action('meernote_members', async( { ack} ) => {ack();});
+app.action('meernote_channels', async( { ack} ) => {ack();});
+
+// listener for button
+app.action('meernote', modal.action);
+
+// listener for slash command
+app.command("/meernote", modal.slashcmd);
+
+// listener for shortcut
+app.shortcut('meernote', modal.shortcut);
+
+// app view
 app.view('meernote', async ({ ack, body, payload, client }) => {
   await ack();
 

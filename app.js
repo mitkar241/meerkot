@@ -6,7 +6,6 @@ const express = require('express');
 const homedir = `${__dirname}`
 const { config } = require(`${homedir}/utils/config.js`);
 const { logger } = require(`${homedir}/utils/logger.js`);
-const { model } = require(`${homedir}/utils/model.js`);
 
 const expressApp = express();
 

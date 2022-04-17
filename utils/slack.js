@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
+const fs = require('fs');
 const homedir = `${__dirname}/..`
 const { app } = require(`${homedir}/app.js`);
 const { config } = require(`${homedir}/utils/config.js`);
 const { logger } = require(`${homedir}/utils/logger.js`);
-const { model } = require(`${homedir}/utils/model.js`);
 
 class Slack {
 
@@ -16,7 +16,7 @@ class Slack {
         "user": "",
         "text" : "",
         "attachments" : "",
-        "blocks": "",
+        "blocks": [],
     }
     */
     parsePayload(type, payloadObj) {
@@ -89,40 +89,76 @@ class Slack {
     }
 
     /*
+    viewObj = {
+      token: "",
+      user_id: "",
+      view: "",
+    }
+    */
+    viewspublish(viewObj) {
+        app.client.views.publish({
+            token: config.bot.access_token,
+            user_id: viewObj.user_id,
+            view: JSON.stringify(viewObj.view),
+        });
+    }
+
+    /*
+    viewObj = {
+        trigger_id: "",
+        view: {}
+    }
+    */
+    viewsopen(viewObj) {
+        try {
+            // Call the views.open method using the WebClient passed to listeners
+            app.client.views.open({
+                trigger_id: viewObj.trigger_id,
+                view: viewObj.view,
+            });
+        }
+        catch (error) {
+          console.error(error);
+        }
+    }
+
+    /*
     https://api.slack.com/methods/files.upload
     https://api.slack.com/types/file#file_types
     */
-    fileupload(fileObj) {
+    filesupload(fileObj) {
         try {
-        // Call the files.upload method using the WebClient
-        const result = app.client.files.upload({
-            
+
+            let postObj = {}
+
             // If you want to put more than one channel, separate using comma, example: 'general,random'
-            channels: fileObj.channels,
-    
+            postObj.channels = fileObj.channels
+
             // Upload file in a thread
-            thread_ts: fileObj.thread_ts,
-    
+            if ("thread_ts" in fileObj == true){
+                postObj.thread_ts = fileObj.thread_ts
+            }
+
             // comment in the same message
-            initial_comment: fileObj.initial_comment,
-            
+            postObj.initial_comment = fileObj.initial_comment
+
             // title of the file while downloading
-            title: fileObj.title,
-    
+            postObj.title = fileObj.title
+
             // filename once downloaded
-            filename: fileObj.filename,
+            postObj.filename = fileObj.filename
     
             // provide file type
-            fileType: fileObj.fileType,
+            postObj.fileType = fileObj.fileType
     
             // via multipart/form-data. If omitting this parameter, you MUST submit content
-            file: fs.createReadStream(fileObj.filePath)
-    
-        });
-        //console.log(result);
+            postObj.file = fs.createReadStream(fileObj.filePath)
+
+            // Call the files.upload method using the WebClient
+            app.client.files.upload(postObj);
         }
         catch (error) {
-        console.error(error);
+          console.error(error);
         }
     }
 
@@ -133,9 +169,10 @@ class Slack {
             channel: chanId,
             timestamp: tstamp
           });
+          logger.info({"message": "emoji added", "channel": chanId, "thread": tstamp, "emoji": emoji});
         }
         catch (error) {
-          console.error(error);
+            logger.error({"message": "emoji addition failed", "error": error, "channel": chanId, "thread": tstamp, "emoji": emoji});
         }
       }
       
@@ -146,9 +183,10 @@ class Slack {
             channel: chanId,
             timestamp: tstamp
           });
+          logger.info({"message": "emoji removed", "channel": chanId, "thread": tstamp, "emoji": emoji});
         }
         catch (error) {
-          console.error(error);
+          logger.error({"message": "emoji removal failed", "error": error, "channel": chanId, "thread": tstamp, "emoji": emoji});
         }
       }
 
