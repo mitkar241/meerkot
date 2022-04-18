@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const CronJob = require('cron').CronJob;
+const { CronJob } = require("cron");
 
 /*
 ##########
@@ -8,7 +8,7 @@ const CronJob = require('cron').CronJob;
 ##########
 
 * * * * * * *
-| | | | | | | 
+| | | | | | |
 | | | | | | +-- Year              (range: 1900-3000)
 | | | | | +---- Day of the Week   (range: 1-7, 1 standing for Monday)
 | | | | +------ Month of the Year (range: 1-12)
@@ -19,12 +19,12 @@ const CronJob = require('cron').CronJob;
 */
 
 function cron(cronExpression, cronFunction) {
-    var cronJob = new CronJob(cronExpression, function() {
-        cronFunction();
-    }, null, true, 'America/Los_Angeles');
-    cronJob.start();
+  const cronJob = new CronJob(cronExpression, (() => {
+    cronFunction();
+  }), null, true, "America/Los_Angeles");
+  cronJob.start();
 }
 
 module.exports = {
-    cron: cron
+  cron,
 };

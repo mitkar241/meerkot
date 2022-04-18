@@ -4,6 +4,8 @@
   "description": "meerkot, a monitoring app",
   "main": "index.js",
   "scripts": {
+    "fix": "./node_modules/.bin/eslint --fix \"**/*.js\"",
+    "lint": "./node_modules/.bin/eslint \"**/*.js\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -30,5 +32,10 @@
     "fs": "^0.0.1-security",
     "js-yaml": "^4.1.0",
     "simple-node-logger": "^21.8.12"
+  },
+  "devDependencies": {
+    "eslint": "^8.13.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0"
   }
 }

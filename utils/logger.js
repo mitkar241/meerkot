@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const SimpleNodeLogger = require('simple-node-logger');
+const SimpleNodeLogger = require("simple-node-logger");
 
 /*
 The log levels include the standard set:
@@ -18,24 +18,24 @@ log.setLevel('warn');
 ```
 */
 
-function initLogger(){
-    const logLoc = `${__dirname}/../var/log`;
-    const logName = `meerkot.log`;
-    const logFilePath = `${logLoc}/${logName}`;
-    const timestampFormat = 'YYYY-MM-DD HH:mm:ss.SSS';
+function initLogger() {
+  const logLoc = `${__dirname}/../var/log`;
+  const logName = "meerkot.log";
+  const logFilePath = `${logLoc}/${logName}`;
+  const timestampFormat = "YYYY-MM-DD HH:mm:ss.SSS";
 
-    let loggerOpts = {
-        logFilePath: logFilePath,
-        timestampFormat: timestampFormat
-    }
+  const loggerOpts = {
+    logFilePath,
+    timestampFormat,
+  };
 
-    let logger = SimpleNodeLogger.createSimpleLogger(loggerOpts);
-    
-    return logger;
+  const logger = SimpleNodeLogger.createSimpleLogger(loggerOpts);
+
+  return logger;
 }
 
-let logger = initLogger();
+const logger = initLogger();
 
 module.exports = {
-    logger: logger
+  logger,
 };
