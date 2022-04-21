@@ -26,3 +26,9 @@ npm init @eslint/config
 npm run lint
 npm run fix
 ```
+
+## TODO
+---
+- add test suite
+- use mocha most probably
+
