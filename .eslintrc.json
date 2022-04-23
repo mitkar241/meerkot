@@ -4,7 +4,8 @@
         "es2021": true
     },
     "extends": [
-        "airbnb-base"
+        "airbnb-base",
+        "eslint:recommended"
     ],
     "parserOptions": {
         "ecmaVersion": "latest",
@@ -23,6 +24,11 @@
         "consistent-return": 2,
         "curly": 2,
         "default-case": 2,
+        // Allowed a getter without setter, but all setters require getters
+        "accessor-pairs": [ "error", {
+            "getWithoutSet": false,
+            "setWithoutGet": true
+        }],
         // the dot goes with the property when doing multiline
         "dot-location": [ "error", "property" ],
         "dot-notation": 2,
@@ -40,6 +46,11 @@
         "no-extend-native": 2,
         "no-extra-bind": 2,
         "no-floating-decimal": 2,
+        "no-implicit-coercion": [ "error", {
+            "boolean": true,
+            "number": true,
+            "string": true
+        }],
         "no-implied-eval": 2,
         "no-invalid-this": 2,
         "no-iterator": 2,
@@ -48,6 +59,143 @@
         "no-magic-numbers": 0,
         "no-multi-spaces": 2,
         "no-multi-str": 2,
-        "no-native-reassign": 2
+        "no-native-reassign": 2,
+        "no-new-func": 2,
+        "no-new-wrappers": 2,
+        "no-new": 2,
+        "no-octal-escape": 2,
+        "no-param-reassign": 2,
+        "no-process-env": 2,
+        "no-proto": 2,
+        "no-redeclare": 2,
+        "no-return-assign": 2,
+        "no-script-url": 2,
+        "no-self-compare": 2,
+        "no-throw-literal": 2,
+        "no-unused-expressions": 2,
+        "no-useless-call": 2,
+        "no-useless-concat": 2,
+        "no-void": 2,
+        "no-with": 2,
+        "radix": 2,
+        "vars-on-top": 2,
+        // Enforces the style of wrapped functions
+        "wrap-iife": [ "error", "outside" ],
+        "yoda": 2,
+        // Strict Mode - for ES6, never use strict.
+        "strict": [ "warn", "never" ],
+        // All JSDoc comments must be valid
+        "valid-jsdoc": [ 2, {
+            "requireReturn": false,
+            "requireReturnDescription": false,
+            "requireParamDescription": true,
+            "prefer": {
+                "return": "returns"
+            }
+        }],
+        // Variables
+        "init-declarations": [ "error", "always" ],
+        "no-catch-shadow": 2,
+        "no-delete-var": 2,
+        "no-label-var": 2,
+        "no-shadow-restricted-names": 2,
+        "no-shadow": 2,
+        // We require all vars to be initialized (see init-declarations)
+        // If we NEED a var to be initialized to undefined, it needs to be explicit
+        "no-undef-init": 2,
+        "no-undef": 2,
+        "no-undefined": 2,
+        "no-unused-vars": 2,
+        // Disallow hoisting - let & const don't allow hoisting anyhow
+        "no-use-before-define": 2,
+        // Node.js and CommonJS
+        "callback-return": [ 2, [ "callback", "next" ]],
+        "global-require": 2,
+        "handle-callback-err": 2,
+        "no-mixed-requires": 2,
+        "no-new-require": 2,
+        // Use path.concat instead
+        "no-path-concat": 2,
+        "no-process-exit": 2,
+        "no-restricted-modules": 2,
+        "no-sync": 2,
+        // ECMAScript 6 support
+        "arrow-body-style": [ 2, "always" ],
+        "arrow-parens": [ 2, "always" ],
+        "arrow-spacing": [ 2, { "before": true, "after": true }],
+        "constructor-super": 2,
+        "generator-star-spacing": [ 2, "before" ],
+        "no-confusing-arrow": 2,
+        "no-class-assign": 2,
+        "no-const-assign": 2,
+        "no-dupe-class-members": 2,
+        "no-this-before-super": 2,
+        "no-var": 2,
+        "object-shorthand": [ 2, "never" ],
+        "prefer-arrow-callback": 2,
+        "prefer-spread": 2,
+        "prefer-template": 2,
+        "require-yield": 2,
+        // Stylistic - everything here is a warning because of style.
+        "array-bracket-spacing": [ 2, "always" ],
+        "block-spacing": [ 2, "always" ],
+        "brace-style": [ 2, "1tbs", { "allowSingleLine": false } ],
+        "camelcase": 2,
+        "comma-spacing": [ 2, { "before": false, "after": true } ],
+        "comma-style": [ 2, "last" ],
+        "computed-property-spacing": [ 2, "never" ],
+        "consistent-this": [ 2, "self" ],
+        "eol-last": 2,
+        "func-style": [ 2, "declaration" ],
+        "id-length": [ 2, { "min": 2, "max": 32 } ],
+        "indent": [ 2, 4 ],
+        "jsx-quotes": [ 2, "prefer-double" ],
+        "linebreak-style": [ 2, "unix" ],
+        "lines-around-comment": [ 0, { "afterBlockComment": true } ],
+        "max-depth": [ 2, 8 ],
+        "max-len": [ 2, 132 ],
+        "max-nested-callbacks": [ 2, 8 ],
+        "max-params": [ 2, 8 ],
+        "new-cap": 2,
+        "new-parens": 2,
+        "no-array-constructor": 2,
+        "no-bitwise": 2,
+        "no-continue": 2,
+        "no-inline-comments": 2,
+        "no-lonely-if": 2,
+        "no-mixed-spaces-and-tabs": 2,
+        "no-multiple-empty-lines": 2,
+        "no-negated-condition": 2,
+        "no-nested-ternary": 2,
+        "no-new-object": 2,
+        "no-plusplus": 2,
+        "no-spaced-func": 2,
+        "no-ternary": 2,
+        "no-trailing-spaces": 2,
+        "no-underscore-dangle": 2,
+        "no-unneeded-ternary": 2,
+        "object-curly-spacing": [ 2, "always" ],
+        "one-var": 2,
+        "operator-assignment": [ 2, "never" ],
+        "operator-linebreak": [ 2, "after" ],
+        "padded-blocks": [ 2, "never" ],
+        "quote-props": [ 2, "consistent-as-needed" ],
+        "require-jsdoc": [ 0, {
+            "require": {
+                "FunctionDeclaration": true,
+                "MethodDefinition": true,
+                "ClassDeclaration": false
+            }
+        }],
+        "semi-spacing": [ 2, { "before": false, "after": true }],
+        "sort-vars": 2,
+        "keyword-spacing": [ 2, { "before": true } ],
+        "space-before-blocks": [ 0, "always" ],
+        "space-before-function-paren": [ 2, "never" ],
+        "space-in-parens": [ 2, "never" ],
+        "space-infix-ops": [ 2, { "int32Hint": true } ],
+        "space-unary-ops": 2,
+        "spaced-comment": [ 2, "always" ],
+        "wrap-regex": 2
     }
 }

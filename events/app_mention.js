@@ -10,10 +10,10 @@ NOTE: "app_mention" in DM triggers event "message"
 */
 
 async function appMention({ event }) {
-  logger.debug({
-    message: "app mentioned", user: event.user, channel: event.channel, text: event.text,
-  });
-  appmention(event);
+    logger.debug({
+        message: "app mentioned", user: event.user, channel: event.channel, text: event.text,
+    });
+    appmention(event);
 }
 
 app.event("app_mention", appMention);

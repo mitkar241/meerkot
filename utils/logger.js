@@ -19,23 +19,23 @@ log.setLevel('warn');
 */
 
 function initLogger() {
-  const logLoc = `${__dirname}/../var/log`;
-  const logName = "meerkot.log";
-  const logFilePath = `${logLoc}/${logName}`;
-  const timestampFormat = "YYYY-MM-DD HH:mm:ss.SSS";
+    const logLoc = `${__dirname}/../var/log`;
+    const logName = "meerkot.log";
+    const logFilePath = `${logLoc}/${logName}`;
+    const timestampFormat = "YYYY-MM-DD HH:mm:ss.SSS";
 
-  const loggerOpts = {
-    logFilePath,
-    timestampFormat,
-  };
+    const loggerOpts = {
+        logFilePath: logFilePath,
+        timestampFormat: timestampFormat,
+    };
 
-  const logger = SimpleNodeLogger.createSimpleLogger(loggerOpts);
+    const logger = SimpleNodeLogger.createSimpleLogger(loggerOpts);
 
-  return logger;
+    return logger;
 }
 
 const logger = initLogger();
 
 module.exports = {
-  logger,
+    logger: logger,
 };

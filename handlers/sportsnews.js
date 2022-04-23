@@ -10,47 +10,53 @@ const { slack } = require(`${homedir}/utils/slack.js`);
 
 // print popular sports news
 function sportsnews(event) {
-  axios.get(`https://newsapi.org/v2/top-headlines?country=in&category=sports&sortBy=popularity&apiKey=${config.newsapi.token}`)
-    .then((res) => {
-      const currarticles = [];
-      const srcarticles = res.data.articles;
-      for (let i = 0; i < 5; i += 1) {
-        const articleStr = [
-          `title : ${srcarticles[i].title}`,
-          `source: ${srcarticles[i].source.name}`,
-          `desc  : ${srcarticles[i].description}`,
-        ].join("\n");
-        currarticles.push(articleStr);
-      }
-      const currArticlesStr = currarticles.join("\n\n");
+    axios.get(`https://newsapi.org/v2/top-headlines?country=in&category=sports&sortBy=popularity&apiKey=${config.newsapi.token}`)
+        .then((res) => {
+            const currarticles = [];
+            const srcarticles = res.data.articles;
+            for (let iter = 0; iter < 5; iter = iter + 1) {
+                const articleStr = [
+                    `title : ${srcarticles[iter].title}`,
+                    `source: ${srcarticles[iter].source.name}`,
+                    `desc  : ${srcarticles[iter].description}`,
+                ].join("\n");
+                currarticles.push(articleStr);
+            }
+            const currArticlesStr = currarticles.join("\n\n");
 
-      const filePath = "/tmp/sports.txt";
-      fs.writeFile(filePath, currArticlesStr, (err) => { if (err) throw err; });
+            const filePath = "/tmp/sports.txt";
+            fs.writeFile(filePath, currArticlesStr, (err) => {
+                if (err) throw err;
+            });
 
-      try {
-        const fileObj = {
-          channels: event.channel,
-          initial_comment: `Hi <@${event.user}>! Here is the sports news file`,
-          title: "sports news file",
-          filename: "logo.png",
-          fileType: "text",
-          filePath,
-        };
+            try {
+                const fileObj = {
+                    channels: event.channel,
+                    initial_comment: `Hi <@${event.user}>! Here is the sports news file`,
+                    title: "sports news file",
+                    filename: "logo.png",
+                    fileType: "text",
+                    filePath: filePath,
+                };
 
-        // if channel type is "im", can't use threads
-        if (event.channel_type !== "im") {
-          fileObj.thread_ts = event.event_ts;
-        }
+                // if channel type is "im", can't use threads
+                if (event.channel_type !== "im") {
+                    fileObj.thread_ts = event.event_ts;
+                }
 
-        slack.filesupload(fileObj);
-      } catch (error) {
-        logger.error({
-          message: "posting sports news failed", err: error, user: event.user, channel: event.channel, channel_type: event.channel_type,
+                slack.filesupload(fileObj);
+            } catch (error) {
+                logger.error({
+                    message: "posting sports news failed",
+                    err: error,
+                    user: event.user,
+                    channel: event.channel,
+                    channel_type: event.channel_type,
+                });
+            }
         });
-      }
-    });
 }
 
 module.exports = {
-  sportsnews,
+    sportsnews: sportsnews,
 };

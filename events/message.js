@@ -20,20 +20,20 @@ private group: 'group'
 */
 
 function handleMessage(event) {
-  // read other channel / monitor messages here
-  if (event.channel_type !== "im") {
-    return;
-  }
-  if (event.text.startsWith(`<@${config.bot.id}>`) === true) {
-    appmention(event);
-  }
+    // read other channel / monitor messages here
+    if (event.channel_type !== "im") {
+        return;
+    }
+    if (event.text.startsWith(`<@${config.bot.id}>`) === true) {
+        appmention(event);
+    }
 }
 
 async function message({ event }) {
-  logger.debug({
-    message: "message received", user: event.user, channel: event.channel, text: event.text,
-  });
-  handleMessage(event);
+    logger.debug({
+        message: "message received", user: event.user, channel: event.channel, text: event.text,
+    });
+    handleMessage(event);
 }
 
 app.event("message", message);

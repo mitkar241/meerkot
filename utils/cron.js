@@ -19,12 +19,12 @@ const { CronJob } = require("cron");
 */
 
 function cron(cronExpression, cronFunction) {
-  const cronJob = new CronJob(cronExpression, () => {
-    cronFunction();
-  }, null, true, "America/Los_Angeles");
-  cronJob.start();
+    const cronJob = new CronJob(cronExpression, () => {
+        cronFunction();
+    }, null, true, "America/Los_Angeles");
+    cronJob.start();
 }
 
 module.exports = {
-  cron,
+    cron: cron,
 };
