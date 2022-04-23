@@ -19,9 +19,9 @@ const { CronJob } = require("cron");
 */
 
 function cron(cronExpression, cronFunction) {
-  const cronJob = new CronJob(cronExpression, (() => {
+  const cronJob = new CronJob(cronExpression, () => {
     cronFunction();
-  }), null, true, "America/Los_Angeles");
+  }, null, true, "America/Los_Angeles");
   cronJob.start();
 }
 
