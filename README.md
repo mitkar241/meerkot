@@ -31,4 +31,4 @@ npm run fix
 ---
 - add test suite
 - use mocha most probably
-
+- Use [momentjs](https://momentjs.com/) package for conversion of time between timezones.
