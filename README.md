@@ -33,3 +33,4 @@ npm run fix
 - use mocha most probably
 - Use [momentjs](https://momentjs.com/) package for conversion of time between timezones.
 - add `crypto` to en/decrypt config files.
+- need to check the linting rules and use them properly.
